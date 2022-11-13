@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "accelerateddecay",
+  "version": "${version}",
+  "name": "Accelerated Decay",
+  "description": "Speeds up leaf decay",
+  "authors": ["ErrorMikey"],
+  "contact": {
+    "homepage": "https://github.com/errormikey/accelerated-decay",
+    "sources": "https://github.com/errormikey/accelerated-decay"
+  },
+  "license": "GPL3",
+  "icon": "assets/AcceleratedDecay/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["pro.mikey.accelerateddecay.AcceleratedDecay::init"]
+  },
+  "mixins": [
+    "accelerateddecay.mixins.json",
+    "accelerateddecay-common.mixins.json"
+  ],
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=1.18.2",
+    "architectury": ">=4.9.83"
+  }
+}
