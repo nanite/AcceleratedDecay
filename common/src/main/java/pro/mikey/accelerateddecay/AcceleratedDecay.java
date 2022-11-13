@@ -56,8 +56,13 @@ public class AcceleratedDecay {
             boolean isFirst = true;
             for (BlockPos yeetLeaf : yeetLeaves) {
                 BlockState blockState = serverLevel.getBlockState(yeetLeaf);
-                System.out.println(blockState);
                 if (!blockState.is(BlockTags.LEAVES)) {
+                    continue;
+                }
+
+                // Allow events to block us
+                EventResult eventResult = BlockEvent.BREAK.invoker().breakBlock(serverLevel, yeetLeaf, blockState, null, null);
+                if (eventResult.isFalse()) {
                     continue;
                 }
 
