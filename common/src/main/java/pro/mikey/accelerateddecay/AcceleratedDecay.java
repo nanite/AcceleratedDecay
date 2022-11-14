@@ -51,6 +51,10 @@ public class AcceleratedDecay {
         }
 
         for (TimedDimBlockPos location : locations) {
+            if (location.player == null || !location.player.isAlive()) {
+                continue;
+            }
+
             Set<BlockPos> yeetLeaves = seekLeaves(serverLevel, location.pos);
 
             boolean isFirst = true;
@@ -61,12 +65,12 @@ public class AcceleratedDecay {
                 }
 
                 // Allow events to block us
-                EventResult eventResult = BlockEvent.BREAK.invoker().breakBlock(serverLevel, yeetLeaf, blockState, null, null);
+                EventResult eventResult = BlockEvent.BREAK.invoker().breakBlock(serverLevel, yeetLeaf, blockState, location.player, null);
                 if (eventResult.isFalse()) {
                     continue;
                 }
 
-                destroyBlockWithOptionalSoundAndParticles(serverLevel, yeetLeaf, true, 512, isFirst);
+                destroyBlockWithOptionalSoundAndParticles(serverLevel, yeetLeaf, true, 512, location.player, isFirst);
                 isFirst = false;
             }
 
@@ -79,7 +83,7 @@ public class AcceleratedDecay {
             return EventResult.pass();
         }
 
-        timeBasedScanLocations.add(new TimedDimBlockPos(Instant.now().plus(1, ChronoUnit.SECONDS), blockPos, level.dimension()));
+        timeBasedScanLocations.add(new TimedDimBlockPos(Instant.now().plus(1, ChronoUnit.SECONDS), blockPos, level.dimension(), player));
         return EventResult.pass();
     }
 
@@ -111,7 +115,7 @@ public class AcceleratedDecay {
         return validLocations;
     }
 
-    public static void destroyBlockWithOptionalSoundAndParticles(Level level, BlockPos blockPos, boolean bl, int i, boolean soundAndParticles) {
+    public static void destroyBlockWithOptionalSoundAndParticles(Level level, BlockPos blockPos, boolean bl, int i, ServerPlayer player, boolean soundAndParticles) {
         BlockState blockState = level.getBlockState(blockPos);
         if (blockState.isAir()) {
             return;
@@ -124,18 +128,19 @@ public class AcceleratedDecay {
 
         if (bl) {
             BlockEntity blockEntity = blockState.hasBlockEntity() ? level.getBlockEntity(blockPos) : null;
-            Block.dropResources(blockState, level, blockPos, blockEntity, null, ItemStack.EMPTY);
+            Block.dropResources(blockState, level, blockPos, blockEntity, player, ItemStack.EMPTY);
         }
 
         boolean bl2 = level.setBlock(blockPos, fluidState.createLegacyBlock(), 3, i);
         if (bl2) {
-            level.gameEvent(null, GameEvent.BLOCK_DESTROY, blockPos);
+            level.gameEvent(player, GameEvent.BLOCK_DESTROY, blockPos);
         }
     }
 
     record TimedDimBlockPos(
             Instant checkAfter,
             BlockPos pos,
-            ResourceKey<Level> dim
+            ResourceKey<Level> dim,
+            ServerPlayer player
     ) {}
 }
