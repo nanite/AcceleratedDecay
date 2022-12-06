@@ -1,7 +1,7 @@
 # Accelerated Decay Changelog
 
-## [0.1.1]
+## [1.0.0]
 
-### Fixed
+### Changed
 
-- An issue causing NPE on mods calling the break event but not expecting a null player... Fair... fixed now :D
+- Updated to 1.19.2
