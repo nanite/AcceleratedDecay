@@ -41,8 +41,6 @@ dependencies {
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
-
-    modRuntimeOnly("dev.ftb.mods:ftb-ultimine-forge:1902.3.5-build.65")
 }
 
 processResources {
