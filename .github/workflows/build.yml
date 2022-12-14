@@ -6,11 +6,9 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: nanite/workflows/.github/workflows/base-java.yml@v1
-        with:
-          use-snapshots: true
-          gradle-tasks: build publish
-        secrets:
-          saps-token: ${{ secrets.SAPS_TOKEN }}
+    uses: nanite/workflows/.github/workflows/base-java.yml@v1
+    with:
+      use-snapshots: true
+      gradle-tasks: build publish
+    secrets:
+      saps-token: ${{ secrets.SAPS_TOKEN }}
