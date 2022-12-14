@@ -12,6 +12,12 @@ dependencies {
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
 }
 
+if (ENV.SAPS_TOKEN) {
+  println("Saps token available")
+} else {
+  println("No saps token 😭")
+}
+
 publishing {
     publications {
         mavenCommon(MavenPublication) {
