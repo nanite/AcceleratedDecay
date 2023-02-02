@@ -12,6 +12,10 @@ Once the last block supporting leaves has been removed, the mod will attempt to 
 
 We support any tree made up with the `#minecraft:logs` tag.
 
+### Example
+
+https://user-images.githubusercontent.com/12798904/216458079-f0c0ce82-ed2d-48c6-90dc-5bde8fb68c31.mp4
+
 ## Why use yours over others
 
 - Less lag is basically the only differentiating factor and a greatly simplified codebase allow for a very minimal performance impact.
