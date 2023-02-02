@@ -24,7 +24,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
     // Remove the next line if you don't want to depend on the API
-    modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
+//    modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
@@ -102,9 +102,6 @@ if (ENV.CURSEFORGE_KEY) {
             addGameVersion "Java 17"
             addGameVersion rootProject.minecraft_version
             mainArtifact(remapJar.archiveFile)
-            relations {
-                requiredDependency("architectury-api")
-            }
             changelog = file("./../CHANGELOG.md")
             changelogType = 'markdown'
         }

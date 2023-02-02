@@ -1,7 +1,12 @@
 # Accelerated Decay Changelog
 
-## [0.1.1]
+## [0.1.2]
 
-### Fixed
+### Removed
 
-- An issue causing NPE on mods calling the break event but not expecting a null player... Fair... fixed now :D
+- Requirement for Architectury have been removed. This mod no longer requires `Architectury` to be installed to the server or client
+
+### Changed
+
+- Updated Forge & Fabric dependencies
+

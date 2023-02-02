@@ -1,9 +1,5 @@
 package pro.mikey.accelerateddecay;
 
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.common.BlockEvent;
-import dev.architectury.event.events.common.TickEvent;
-import dev.architectury.utils.value.IntValue;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -20,7 +16,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.FluidState;
-import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -32,11 +27,10 @@ public class AcceleratedDecay {
     private static final List<TimedDimBlockPos> timeBasedScanLocations = new ArrayList<>();
 
     public static void init() {
-        BlockEvent.BREAK.register(AcceleratedDecay::breakHandler);
-        TickEvent.SERVER_LEVEL_POST.register(AcceleratedDecay::levelTick);
+
     }
 
-    private static void levelTick(ServerLevel serverLevel) {
+    public static void levelTickPostEvent(ServerLevel serverLevel) {
         if (timeBasedScanLocations.isEmpty()) {
             return;
         }
@@ -65,8 +59,7 @@ public class AcceleratedDecay {
                 }
 
                 // Allow events to block us
-                EventResult eventResult = BlockEvent.BREAK.invoker().breakBlock(serverLevel, yeetLeaf, blockState, location.player, null);
-                if (eventResult.isFalse()) {
+                if (!CrossPlatform.emitBlockBrokeEvent(serverLevel, yeetLeaf, blockState, location.player)) {
                     continue;
                 }
 
@@ -78,14 +71,14 @@ public class AcceleratedDecay {
         }
     }
 
-    private static EventResult breakHandler(Level level, BlockPos blockPos, BlockState state, ServerPlayer player, @Nullable IntValue intValue) {
+    public static void breakEvent(Level level, BlockState state, BlockPos blockPos, ServerPlayer player) {
         if (!state.is(BlockTags.LOGS)) {
-            return EventResult.pass();
+            return;
         }
 
         timeBasedScanLocations.add(new TimedDimBlockPos(Instant.now().plus(1, ChronoUnit.SECONDS), blockPos, level.dimension(), player));
-        return EventResult.pass();
     }
+
 
     private static final BlockPos[] SCAN_LOCATIONS;
     static {

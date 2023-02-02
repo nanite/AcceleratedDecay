@@ -21,4 +21,6 @@ We support any tree made up with the `#minecraft:logs` tag.
 
 ### Why do you require the `architectury-api`?
 
+> Note, I've updated the 1.18.2 of this mod to no longer depend on architectury. I will update the newer versions soon. 
+
 I'm lazy, stop judging me, we fire and listen on some events that it's much simpler to implement with `architectury`. Also, lots of mods use it now so if you're on a modpack or making a modpack, you likely already have it!
