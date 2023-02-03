@@ -1,12 +1,7 @@
 # Accelerated Decay Changelog
 
-## [0.1.2]
+## [0.1.3]
 
-### Removed
+### Fixed
 
-- Requirement for Architectury have been removed. This mod no longer requires `Architectury` to be installed to the server or client
-
-### Changed
-
-- Updated Forge & Fabric dependencies
-
+- Added protection around clients being able to call server events

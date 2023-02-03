@@ -20,7 +20,9 @@ public class AcceleratedDecayForge {
 
     @SubscribeEvent
     void onBreakEvent(BlockEvent.BreakEvent event) {
-        AcceleratedDecay.breakEvent((Level) event.getWorld(), event.getState(), event.getPos(), (ServerPlayer) event.getPlayer());
+        if (event.getPlayer() instanceof ServerPlayer player) {
+            AcceleratedDecay.breakEvent((Level) event.getWorld(), event.getState(), event.getPos(), player);
+        }
     }
 
     @SubscribeEvent
