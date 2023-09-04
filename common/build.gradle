@@ -17,8 +17,6 @@ publishing {
         mavenCommon(MavenPublication) {
             artifactId = "${rootProject.archivesBaseName}-${project.name}"
             from components.java
-
-            version = MAVEN_VERSION
         }
     }
 }
