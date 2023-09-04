@@ -2,25 +2,21 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         maven {
-            url "https://maven.architectury.dev/"
-            content {
-                includeGroup "dev.architectury"
-                includeGroup "dev.architectury.loom"
-                includeGroup "architectury-plugin"
-            }
-        }
-        maven {
             url "https://maven.neoforged.net/releases"
             content {
                 includeGroup "net.neoforged"
             }
         }
+
         maven {
             url "https://maven.creeperhost.net/"
             content {
                 includeGroup "net.minecraftforge"
                 includeGroup "net.fabricmc"
                 includeGroup "de.oceanlabs.mcp"
+                includeGroup "dev.architectury"
+                includeGroup "dev.architectury.loom"
+                includeGroup "architectury-plugin"
             }
         }
     }
