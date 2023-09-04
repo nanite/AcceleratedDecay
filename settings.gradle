@@ -13,12 +13,12 @@ pluginManagement {
             url "https://maven.neoforged.net/releases"
             content {
                 includeGroup "net.neoforged"
-                includeGroup "net.minecraftforge"
             }
         }
         maven {
             url "https://maven.creeperhost.net/"
             content {
+                includeGroup "net.minecraftforge"
                 includeGroup "net.fabricmc"
                 includeGroup "de.oceanlabs.mcp"
             }
