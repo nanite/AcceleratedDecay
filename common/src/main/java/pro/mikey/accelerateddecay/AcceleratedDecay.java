@@ -25,11 +25,13 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Iterator;
 
 public class AcceleratedDecay {
     public static final String MOD_ID = "accelerateddecay";
 
-    private static final List<TimedDimBlockPos> timeBasedScanLocations = new ArrayList<>();
+    private static final ConcurrentHashMap<TimedDimBlockPos, Boolean> timeBasedScanLocations = new ConcurrentHashMap<>();
 
     public static void init() {
         BlockEvent.BREAK.register(AcceleratedDecay::breakHandler);
@@ -37,44 +39,36 @@ public class AcceleratedDecay {
     }
 
     private static void levelTick(ServerLevel serverLevel) {
-        if (timeBasedScanLocations.isEmpty()) {
-            return;
-        }
-
         Instant now = Instant.now();
-        List<TimedDimBlockPos> locations = timeBasedScanLocations.stream()
-                .filter(e -> !e.checkAfter.isAfter(now) && serverLevel.dimension().equals(e.dim))
-                .toList();
 
-        if (locations.isEmpty()) {
-            return;
-        }
-
-        for (TimedDimBlockPos location : locations) {
-            if (location.player == null || !location.player.isAlive()) {
-                continue;
-            }
-
-            Set<BlockPos> yeetLeaves = seekLeaves(serverLevel, location.pos);
-
-            boolean isFirst = true;
-            for (BlockPos yeetLeaf : yeetLeaves) {
-                BlockState blockState = serverLevel.getBlockState(yeetLeaf);
-                if (!blockState.is(BlockTags.LEAVES)) {
+        for (Iterator<TimedDimBlockPos> iterator = timeBasedScanLocations.keySet().iterator(); iterator.hasNext(); ) {
+            TimedDimBlockPos location = iterator.next();
+            if (!location.checkAfter.isAfter(now) && serverLevel.dimension().equals(location.dim)) {
+                if (location.player == null || !location.player.isAlive()) {
+                    iterator.remove();
                     continue;
                 }
 
-                // Allow events to block us
-                EventResult eventResult = BlockEvent.BREAK.invoker().breakBlock(serverLevel, yeetLeaf, blockState, location.player, null);
-                if (eventResult.isFalse()) {
-                    continue;
+                Set<BlockPos> yeetLeaves = seekLeaves(serverLevel, location.pos);
+
+                boolean isFirst = true;
+                for (BlockPos yeetLeaf : yeetLeaves) {
+                    BlockState blockState = serverLevel.getBlockState(yeetLeaf);
+                    if (!blockState.is(BlockTags.LEAVES)) {
+                        continue;
+                    }
+
+                    EventResult eventResult = BlockEvent.BREAK.invoker().breakBlock(serverLevel, yeetLeaf, blockState, location.player, null);
+                    if (eventResult.isFalse()) {
+                        continue;
+                    }
+
+                    destroyBlockWithOptionalSoundAndParticles(serverLevel, yeetLeaf, true, 512, location.player, isFirst);
+                    isFirst = false;
                 }
 
-                destroyBlockWithOptionalSoundAndParticles(serverLevel, yeetLeaf, true, 512, location.player, isFirst);
-                isFirst = false;
+                iterator.remove();
             }
-
-            timeBasedScanLocations.remove(location);
         }
     }
 
@@ -83,7 +77,7 @@ public class AcceleratedDecay {
             return EventResult.pass();
         }
 
-        timeBasedScanLocations.add(new TimedDimBlockPos(Instant.now().plus(1, ChronoUnit.SECONDS), blockPos, level.dimension(), player));
+        timeBasedScanLocations.put(new TimedDimBlockPos(Instant.now().plus(1, ChronoUnit.SECONDS), blockPos, level.dimension(), player), Boolean.TRUE);
         return EventResult.pass();
     }
 
@@ -131,10 +125,8 @@ public class AcceleratedDecay {
             Block.dropResources(blockState, level, blockPos, blockEntity, player, ItemStack.EMPTY);
         }
 
-        boolean bl2 = level.setBlock(blockPos, fluidState.createLegacyBlock(), 3, i);
-        if (bl2) {
-            level.gameEvent(player, GameEvent.BLOCK_DESTROY, blockPos);
-        }
+        level.setBlock(blockPos, fluidState.createLegacyBlock(), 3, i);
+        level.gameEvent(player, GameEvent.BLOCK_DESTROY, blockPos);
     }
 
     record TimedDimBlockPos(
