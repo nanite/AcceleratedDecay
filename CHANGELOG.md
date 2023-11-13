@@ -1,7 +1,5 @@
-# Accelerated Decay Changelog
-
-## [1.0.0]
+## [1.0.1]
 
 ### Changed
 
-- Updated to 1.19.2
+- Improved multi-threading safety and performance thanks to [(#7)](https://github.com/ErrorMikey/AcceleratedDecay/pull/7) [BumbleTree](https://github.com/BumbleTree)

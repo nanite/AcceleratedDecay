@@ -1,11 +1,15 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
-    id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
 architectury {
     platformSetupLoomIde()
     forge()
+}
+
+repositories {
+    maven { url "https://maven.neoforged.net/releases" }
+    maven { url "https://maven.creeperhost.net/" }
 }
 
 loom {
@@ -28,21 +32,13 @@ configurations {
     developmentForge.extendsFrom common
 }
 
-repositories {
-    maven {
-        url "https://maven.saps.dev/minecraft"
-    }
-}
-
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.forge_version}"
+    forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
-
-    modRuntimeOnly("dev.ftb.mods:ftb-ultimine-forge:1902.3.5-build.65")
 }
 
 processResources {
@@ -58,18 +54,18 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    setArchiveClassifier "dev-shadow"
 }
 
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
+    setArchiveClassifier null
     setArchivesBaseName("${rootProject.archivesBaseName}-${project.name}") // adds fabric to the maven and curse name
 }
 
 jar {
-    classifier "dev"
+    setArchiveClassifier "dev"
 }
 
 sourcesJar {
@@ -89,41 +85,6 @@ publishing {
         mavenForge(MavenPublication) {
             artifactId = "${rootProject.archivesBaseName}-${project.name}"
             from components.java
-
-            version = MAVEN_VERSION
-        }
-    }
-
-    repositories {
-        if (ENV.SAPS_TOKEN) {
-            maven {
-                url MAVEN_URL
-                credentials {
-                    username = "errormikey"
-                    password = "${ENV.SAPS_TOKEN}"
-                }
-            }
         }
     }
 }
-
-if (ENV.CURSEFORGE_KEY) {
-    curseforge {
-        apiKey = ENV.CURSEFORGE_KEY
-        project {
-            id = rootProject.curseforge_id
-            releaseType = "release"
-            addGameVersion "Forge"
-            addGameVersion "Java 17"
-            addGameVersion rootProject.minecraft_version
-            mainArtifact(remapJar.archiveFile)
-            relations {
-                requiredDependency("architectury-api")
-            }
-            changelog = file("./../CHANGELOG.md")
-            changelogType = 'markdown'
-        }
-    }
-}
-
-rootProject.tasks.curseforgePublish.dependsOn tasks.curseforge
