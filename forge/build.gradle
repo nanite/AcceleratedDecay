@@ -41,8 +41,6 @@ dependencies {
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
-
-    modRuntimeOnly("dev.ftb.mods:ftb-ultimine-forge:1802.3.3-build.67")
 }
 
 processResources {
@@ -114,7 +112,7 @@ if (ENV.CURSEFORGE_KEY) {
             id = rootProject.curseforge_id
             releaseType = "release"
             addGameVersion "Forge"
-            addGameVersion "Java 17"
+            addGameVersion "Java 8"
             addGameVersion rootProject.minecraft_version
             mainArtifact(remapJar.archiveFile)
             changelog = file("./../CHANGELOG.md")
