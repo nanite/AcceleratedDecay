@@ -15,21 +15,21 @@ Speeds up the decay of leaves
 
 [[dependencies.accelerateddecay]]
 modId = "neoforge"
-mandatory = true
+required = true
 versionRange = "[20.2,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.accelerateddecay]]
 modId = "minecraft"
-mandatory = true
+required = true
 versionRange = "[1.20.2,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.accelerateddecay]]
 modId = "architectury"
-mandatory = true
+required = true
 versionRange = "[9.1.12,)"
 ordering = "AFTER"
 side = "BOTH"
