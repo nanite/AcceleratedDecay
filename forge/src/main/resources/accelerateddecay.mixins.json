@@ -1,7 +1,8 @@
 {
   "required": true,
-  "package": "pro.mikey.accelerateddecay.mixin.forge",
+  "package": "pro.mikey.accelerateddecay.mixin.neoforge",
   "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.7",
   "client": [],
   "mixins": [],
   "injectors": {

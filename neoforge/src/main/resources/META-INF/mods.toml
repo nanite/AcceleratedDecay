@@ -1,0 +1,41 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+#issueTrackerURL = ""
+license = "GPL3"
+
+[[mods]]
+modId = "accelerateddecay"
+version = "${version}"
+displayName = "Accelerated Decay"
+authors = "ErrorMikey"
+description = '''
+Speeds up the decay of leaves
+'''
+#logoFile = ""
+
+[[dependencies.accelerateddecay]]
+modId = "neoforge"
+mandatory = true
+versionRange = "[20.2,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.accelerateddecay]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.2,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.accelerateddecay]]
+modId = "architectury"
+mandatory = true
+versionRange = "[9.1.12,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[mixins]]
+config = "accelerateddecay-common.mixins.json"
+
+[[mixins]]
+config = "accelerateddecay.mixins.json"
