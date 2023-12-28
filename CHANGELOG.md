@@ -1,5 +1,5 @@
-## [3.0.1]
+## [84.0.0]
 
 ### Changed
 
-- Improved multi-threading safety and performance thanks to [(#7)](https://github.com/ErrorMikey/AcceleratedDecay/pull/7) [BumbleTree](https://github.com/BumbleTree)
+- Ported to 1.20.4
