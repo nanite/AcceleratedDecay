@@ -12,31 +12,11 @@ dependencies {
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
 }
 
-if (ENV.SAPS_TOKEN) {
-  println("Saps token available")
-} else {
-  println("No saps token 😭")
-}
-
 publishing {
     publications {
         mavenCommon(MavenPublication) {
             artifactId = "${rootProject.archivesBaseName}-${project.name}"
             from components.java
-
-            version = MAVEN_VERSION
-        }
-    }
-
-    repositories {
-        if (ENV.SAPS_TOKEN) {
-            maven {
-                url MAVEN_URL
-                credentials {
-                    username = "errormikey"
-                    password = "${ENV.SAPS_TOKEN}"
-                }
-            }
         }
     }
 }
