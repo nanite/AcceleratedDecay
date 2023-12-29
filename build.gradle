@@ -78,7 +78,7 @@ publishMods {
     def forgeOptions = publishOptions {
         file = project.provider { project(":forge").tasks.remapJar }.flatMap { it.archiveFile }
         displayName = "[FORGE][${rootProject.minecraft_version}] ${project.name} ${mod_version}"
-        modLoaders.add("neoforge")
+        modLoaders.add("forge")
     }
 
     def curseForgeOptions = curseforgeOptions {
@@ -96,31 +96,23 @@ publishMods {
     curseforge("curseforgeFabric") {
         from(curseForgeOptions, fabricOptions)
         requires {
-            slug = "architectury-api"
             slug = "fabric-api"
         }
     }
 
     curseforge("curseforgeForge") {
         from(curseForgeOptions, forgeOptions)
-        requires {
-            slug = "architectury-api"
-        }
     }
 
     modrinth("modrinthFabric") {
         from(modrinthOptions, fabricOptions)
         requires {
-            slug = "architectury-api"
             slug = "fabric-api"
         }
     }
 
     modrinth("modrinthForge") {
         from(modrinthOptions, forgeOptions)
-        requires {
-            slug = "architectury-api"
-        }
     }
 
     github {
