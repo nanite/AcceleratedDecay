@@ -1,7 +1,7 @@
 # Accelerated Decay Changelog
 
-## [0.1.3]
+## [69.0.0]
 
-### Fixed
+### Changed
 
-- Added protection around clients being able to call server events
+- Backported to 1.16.5 thanks to [@Kasualix](https://github.com/Kasualix)
