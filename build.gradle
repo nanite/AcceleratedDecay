@@ -133,7 +133,7 @@ publishMods {
 //    }
 
     modrinth("modrinthNeoforge") {
-        from(modrinthOptions, forgeOptions)
+        from(modrinthOptions, neoforgeOptions)
         requires {
             slug = "architectury-api"
         }
