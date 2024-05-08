@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[1,)"
+loaderVersion = "[2,)"
 #issueTrackerURL = ""
 license = "GPL3"
 
@@ -16,14 +16,14 @@ Speeds up the decay of leaves
 [[dependencies.accelerateddecay]]
 modId = "neoforge"
 required = true
-versionRange = "[20.2,)"
+versionRange = "[20.5,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.accelerateddecay]]
 modId = "minecraft"
 required = true
-versionRange = "[1.20.2,)"
+versionRange = "[1.20.5,)"
 ordering = "NONE"
 side = "BOTH"
 
