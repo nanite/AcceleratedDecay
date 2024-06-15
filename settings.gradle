@@ -13,12 +13,26 @@ pluginManagement {
         maven {
             url "https://maven.creeperhost.net/"
         }
+
+        maven {
+            url "https://maven.saps.dev/releases"
+            content {
+                includeGroupByRegex("pro.mikey.*")
+            }
+        }
+
+        maven {
+            url "https://maven.saps.dev/snapshots"
+            content {
+                includeGroupByRegex("pro.mikey.*")
+            }
+        }
     }
 }
 
 include("common")
 include("fabric")
-include("forge")
+//include("forge")
 include("neoforge")
 
 rootProject.name = "accelerated-decay"
