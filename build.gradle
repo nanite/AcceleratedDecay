@@ -1,7 +1,8 @@
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
     id "dev.architectury.loom" version "1.6-SNAPSHOT" apply false
-    id "me.modmuss50.mod-publish-plugin" version "0.4.5"
+    id "me.modmuss50.mod-publish-plugin" version "0.5.1"
+    id 'pro.mikey.plugins.insaniam' version "0.1-SNAPSHOT"
 }
 
 architectury {
@@ -59,29 +60,30 @@ allprojects {
     }
 }
 
+def changelogData = insaniamUtils.createChangelog {
+    file = file('CHANGELOG.md')
+    versionPattern = ~/## \[[^]]+]/
+    fallbackValue = "No changelog provided"
+    version = project.mod_version
+}
+
 publishMods {
     dryRun = providers.environmentVariable("CURSE_TOKEN").getOrNull() == null
-    changelog = file("./CHANGELOG.md").text
+    changelog = changelogData
     version = "${mod_version}"
     type = STABLE
 
     def fabricOptions = publishOptions {
         file = project.provider { project(":fabric").tasks.remapJar }.flatMap { it.archiveFile }
-        displayName = "[FABRIC][${rootProject.minecraft_version}] ${project.name} ${mod_version}"
+        displayName = "[FABRIC] ${project.name} ${mod_version}"
         modLoaders.add("fabric")
     }
 
     def neoforgeOptions = publishOptions {
         file = project.provider { project(":neoforge").tasks.remapJar }.flatMap { it.archiveFile }
-        displayName = "[NEOFORGE][${rootProject.minecraft_version}] ${project.name} ${mod_version}"
+        displayName = "[NEOFORGE] ${project.name} ${mod_version}"
         modLoaders.add("neoforge")
     }
-
-//    def forgeOptions = publishOptions {
-//        file = project.provider { project(":forge").tasks.remapJar }.flatMap { it.archiveFile }
-//        displayName = "[FORGE][${rootProject.minecraft_version}] ${project.name} ${mod_version}"
-//        modLoaders.add("forge")
-//    }
 
     def curseForgeOptions = curseforgeOptions {
         accessToken = providers.environmentVariable("CURSE_TOKEN")
@@ -110,13 +112,6 @@ publishMods {
         }
     }
 
-//    curseforge("curseforgeForge") {
-//        from(curseForgeOptions, forgeOptions)
-//        requires {
-//            slug = "architectury-api"
-//        }
-//    }
-
     modrinth("modrinthFabric") {
         from(modrinthOptions, fabricOptions)
         requires {
@@ -125,12 +120,6 @@ publishMods {
         }
     }
 
-//    modrinth("modrinthForge") {
-//        from(modrinthOptions, neoforgeOptions)
-//        requires {
-//            slug = "architectury-api"
-//        }
-//    }
 
     modrinth("modrinthNeoforge") {
         from(modrinthOptions, neoforgeOptions)
@@ -140,9 +129,8 @@ publishMods {
     }
 
     github {
-        file = project.provider { project(":neoforge").tasks.remapJar }.flatMap { it.archiveFile }
         additionalFiles.from project.provider { project(":fabric").tasks.remapJar }.flatMap { it.archiveFile }
-//        additionalFiles.from project.provider { project(":forge").tasks.remapJar }.flatMap { it.archiveFile }
+        file = project.provider { project(":neoforge").tasks.remapJar }.flatMap { it.archiveFile }
 
         repository = "${project.github_repo}"
         accessToken = providers.environmentVariable("GITHUB_TOKEN")
