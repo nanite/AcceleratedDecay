@@ -4,7 +4,7 @@ issueTrackerURL = "https://github.com/Nanite/AcceleratedDecay/issues"
 license = "GPL3"
 
 [[mods]]
-modId = "accelerateddecay"
+modId = "${mod_id}"
 version = "${version}"
 displayName = "Accelerated Decay"
 authors = "ErrorMikey"
@@ -16,26 +16,13 @@ Speeds up the decay of leaves
 [[dependencies.accelerateddecay]]
 modId = "neoforge"
 required = true
-versionRange = "[21.0,)"
+versionRange = "[26.1.0.1-beta,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.accelerateddecay]]
 modId = "minecraft"
 required = true
-versionRange = "[1.21,)"
+versionRange = "[26.1,)"
 ordering = "NONE"
 side = "BOTH"
-
-[[dependencies.accelerateddecay]]
-modId = "architectury"
-required = true
-versionRange = "[13.0.0,)"
-ordering = "AFTER"
-side = "BOTH"
-
-[[mixins]]
-config = "accelerateddecay-common.mixins.json"
-
-[[mixins]]
-config = "accelerateddecay.mixins.json"

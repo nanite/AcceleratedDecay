@@ -1,91 +1,46 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id 'net.neoforged.moddev'
 }
 
-architectury {
-    platformSetupLoomIde()
-    neoForge()
-}
+neoForge {
+    version = project.neoforge_version
 
-repositories {
-    maven { url "https://maven.neoforged.net/releases" }
-    maven { url "https://maven.creeperhost.net/" }
-}
+    runs {
+        client {
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
 
-loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
 
-    neoForge {}
-}
-
-configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentNeoForge.extendsFrom common
-}
-
-dependencies {
-    neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
-    // Remove the next line if you don't want to depend on the API
-    modApi "dev.architectury:architectury-neoforge:${rootProject.architectury_api_version}"
-
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
-}
-
-processResources {
-    inputs.property "version", project.version
-
-    filesMatching("META-INF/neoforge.mods.toml") {
-        expand "version": project.version
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
     }
-}
 
-shadowJar {
-    exclude "fabric.mod.json"
-    exclude "architectury.common.json"
-
-    configurations = [project.configurations.shadowCommon]
-    setArchiveClassifier "dev-shadow"
-}
-
-remapJar {
-    input.set shadowJar.archiveFile
-    dependsOn shadowJar
-    setArchiveClassifier null
-    setArchivesBaseName("${rootProject.archivesBaseName}-${project.name}") // adds fabric to the maven and curse name
-    atAccessWideners.add('accelerateddecay.accesswidener')
-}
-
-jar {
-    setArchiveClassifier "dev"
-}
-
-sourcesJar {
-    def commonSources = project(":common").sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
-}
-
-components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
-    }
-}
-
-publishing {
-    publications {
-        mavenForge(MavenPublication) {
-            artifactId = "${rootProject.archivesBaseName}-${project.name}"
-            from components.java
+    mods {
+        "accelerateddecay" {
+            sourceSet(sourceSets.main)
+            sourceSet(project(":common").sourceSets.main)
         }
     }
 }
 
-sourceSets.each {
-    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
-    it.output.resourcesDir = dir
-    it.java.destinationDirectory = dir
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+repositories {
+    maven {
+        url "https://maven.neoforged.net/releases"
+    }
+}
+
+java {
+    withSourcesJar()
 }

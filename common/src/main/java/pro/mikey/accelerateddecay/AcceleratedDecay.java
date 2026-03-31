@@ -1,9 +1,5 @@
 package pro.mikey.accelerateddecay;
 
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.common.BlockEvent;
-import dev.architectury.event.events.common.TickEvent;
-import dev.architectury.utils.value.IntValue;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -20,7 +16,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.FluidState;
-import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -34,11 +29,9 @@ public class AcceleratedDecay {
     private static final ConcurrentHashMap<TimedDimBlockPos, Boolean> timeBasedScanLocations = new ConcurrentHashMap<>();
 
     public static void init() {
-        BlockEvent.BREAK.register(AcceleratedDecay::breakHandler);
-        TickEvent.SERVER_LEVEL_POST.register(AcceleratedDecay::levelTick);
     }
 
-    private static void levelTick(ServerLevel serverLevel) {
+    public static void levelTick(ServerLevel serverLevel, BlockBreakCallback blockBreakCallback) {
         Instant now = Instant.now();
 
         for (Iterator<TimedDimBlockPos> iterator = timeBasedScanLocations.keySet().iterator(); iterator.hasNext(); ) {
@@ -58,8 +51,8 @@ public class AcceleratedDecay {
                         continue;
                     }
 
-                    EventResult eventResult = BlockEvent.BREAK.invoker().breakBlock(serverLevel, yeetLeaf, blockState, location.player, null);
-                    if (eventResult.isFalse()) {
+                    boolean eventResult = blockBreakCallback.onBreak(serverLevel, yeetLeaf, blockState, location.player);
+                    if (!eventResult) {
                         continue;
                     }
 
@@ -72,13 +65,12 @@ public class AcceleratedDecay {
         }
     }
 
-    private static EventResult breakHandler(Level level, BlockPos blockPos, BlockState state, ServerPlayer player, @Nullable IntValue intValue) {
+    public static void breakHandler(Level level, BlockPos blockPos, BlockState state, ServerPlayer player) {
         if (!state.is(BlockTags.LOGS)) {
-            return EventResult.pass();
+            return;
         }
 
         timeBasedScanLocations.put(new TimedDimBlockPos(Instant.now().plus(1, ChronoUnit.SECONDS), blockPos, level.dimension(), player), Boolean.TRUE);
-        return EventResult.pass();
     }
 
     private static final BlockPos[] SCAN_LOCATIONS;
@@ -135,4 +127,9 @@ public class AcceleratedDecay {
             ResourceKey<Level> dim,
             ServerPlayer player
     ) {}
+
+    @FunctionalInterface
+    public interface BlockBreakCallback {
+        boolean onBreak(ServerLevel level, BlockPos pos, BlockState state, ServerPlayer player);
+    }
 }

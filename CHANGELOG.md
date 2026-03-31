@@ -1,3 +1,10 @@
+## [26.1.0.1]
+
+### Changed
+
+- Ported to 26.1
+- Removed Architectury API dependency
+
 ## [21.0.0]
 
 ### Changed

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "accelerateddecay",
+  "id": "${mod_id}",
   "version": "${version}",
   "name": "Accelerated Decay",
   "description": "Speeds up leaf decay",
@@ -10,18 +10,14 @@
     "sources": "https://github.com/Nanite/AcceleratedDecay"
   },
   "license": "GPL3",
-  "icon": "assets/AcceleratedDecay/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": ["pro.mikey.accelerateddecay.AcceleratedDecay::init"]
+    "main": ["pro.mikey.accelerateddecay.fabric.AcceleratedDecayFabric"]
   },
   "mixins": [
-    "accelerateddecay.mixins.json",
-    "accelerateddecay-common.mixins.json"
   ],
   "depends": {
-    "fabric": "*",
-    "minecraft": ">=1.21",
-    "architectury": ">=13.0.0"
+    "fabric-api": "*",
+    "minecraft": ">=1.21"
   }
 }
