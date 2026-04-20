@@ -1,3 +1,8 @@
+## [26.1.2.1]
+
+### Changed
+* Ported to NeoForge 26.1.2.21-beta which breaks the `BlockBreak` event.
+
 ## [26.1.0.1]
 
 ### Changed

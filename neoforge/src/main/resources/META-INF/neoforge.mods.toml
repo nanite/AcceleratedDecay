@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[3,)"
+loaderVersion = "[4,)"
 issueTrackerURL = "https://github.com/Nanite/AcceleratedDecay/issues"
 license = "GPL3"
 
@@ -13,16 +13,16 @@ Speeds up the decay of leaves
 '''
 #logoFile = ""
 
-[[dependencies.accelerateddecay]]
+[[dependencies.${mod_id}]]
 modId = "neoforge"
 required = true
-versionRange = "[26.1.0.1-beta,)"
+versionRange = "${neoforge_version_range}"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.accelerateddecay]]
+[[dependencies.${mod_id}]]
 modId = "minecraft"
 required = true
-versionRange = "[26.1,)"
+versionRange = "${minecraft_version_range_maven}"
 ordering = "NONE"
 side = "BOTH"

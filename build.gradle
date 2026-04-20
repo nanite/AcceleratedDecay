@@ -3,7 +3,13 @@ plugins {
     id 'net.fabricmc.fabric-loom' version '1.15-SNAPSHOT' apply(false)
     id 'net.neoforged.moddev' version '2.0.141' apply(false)
     id "me.modmuss50.mod-publish-plugin" version "1.1.0"
-    id 'pro.mikey.plugins.insaniam' version "0.1-SNAPSHOT"
+    id "dev.nanite.nanite-plugin" version "0.1.0-SNAPSHOT"
+}
+
+nanite {
+    changelog {
+        file = file("./CHANGELOG.md")
+    }
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -15,8 +21,8 @@ allprojects {
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
 
-    version = rootProject.mod_version
-    group = rootProject.maven_group
+    version = naniteUtils.createModVersion()
+    group = maven_group
 
     tasks.withType(JavaCompile).configureEach {
         options.encoding = 'UTF-8'
@@ -33,7 +39,7 @@ allprojects {
 
 subprojects {
     base {
-        archivesName = rootProject.archives_base_name + (project.name != "common" ? "-${project.name}" : "")
+        archivesName = "${archives_base_name}-$project.name"
     }
 
     if (project.name != "common") {
@@ -47,9 +53,16 @@ subprojects {
     }
 
     def replaceProperties = [
-            minecraft_version: minecraft_version,
             version: version,
-            mod_id: mod_id
+            mod_id: mod_id,
+            minecraft_version: minecraft_version,
+            minecraft_version_range_maven: minecraft_version_range_maven,
+            minecraft_version_range_semver: minecraft_version_range_semver,
+            neoforge_version: neoforge_version,
+            neoforge_version_range: neoforge_version_range,
+            fabric_loader_version: fabric_loader_version,
+            fabric_api_version: fabric_api_version,
+            fabric_api_version_range: fabric_api_version_range
     ]
 
     processResources {
@@ -83,23 +96,20 @@ subprojects {
     }
 }
 
-def changelogData = insaniamUtils.createChangelog {
-    file = file('CHANGELOG.md')
-    versionPattern = ~/## \[[^]]+]/
-    fallbackValue = "No changelog provided"
-    version = project.mod_version
+tasks.named("publishMods") {
+    dependsOn tasks.named("createChangelog")
 }
 
 publishMods {
     dryRun = providers.environmentVariable("CURSE_TOKEN").getOrNull() == null
-    changelog = changelogData
-    version = mod_version
+    changelog = tasks.named("createChangelog").flatMap { it.outputFile }.map { it.asFile.text }
+    version = project.version
     type = STABLE
 
     def createOptions = { String modLoader ->
         publishOptions {
             file = project.provider { project(":${modLoader}").tasks.jar }.flatMap { it.archiveFile }
-            displayName = "[${modLoader.toUpperCase()}] ${project.name} ${mod_version}"
+            displayName = "${project.name} ${modLoader.capitalize()} ${project.version}"
             modLoaders.add(modLoader)
         }
     }

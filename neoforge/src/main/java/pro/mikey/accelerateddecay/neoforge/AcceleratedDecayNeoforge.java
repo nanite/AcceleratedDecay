@@ -10,6 +10,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import pro.mikey.accelerateddecay.AcceleratedDecay;
@@ -22,7 +23,7 @@ public class AcceleratedDecayNeoforge {
         NeoForge.EVENT_BUS.addListener(this::blockBreak);
     }
 
-    private void blockBreak(BlockEvent.BreakEvent event) {
+    private void blockBreak(BreakBlockEvent event) {
         if (!(event.getLevel() instanceof ServerLevel serverLevel)) {
             return;
         }
@@ -39,7 +40,7 @@ public class AcceleratedDecayNeoforge {
     }
 
     private boolean fireBlockBreakEvent(ServerLevel serverLevel, BlockPos pos, BlockState blockState, ServerPlayer player) {
-        BlockEvent.BreakEvent post = NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(serverLevel, pos, blockState, player));
+        BreakBlockEvent post = NeoForge.EVENT_BUS.post(new BreakBlockEvent(serverLevel, pos, blockState, player));
         return !post.isCanceled(); // True if the event was not canceled, meaning the block break should proceed
     }
 }
