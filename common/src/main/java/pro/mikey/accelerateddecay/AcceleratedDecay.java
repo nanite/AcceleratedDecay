@@ -62,14 +62,17 @@ public class AcceleratedDecay {
         }
     }
 
-    public static void tryAddLeaveToQueue(Level level, BlockPos pos, BlockState state) {
+    public static void tryAddLeaveToQueue(Level level, BlockPos pos, BlockState oldState, BlockState newState) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
 
-        if (state.getBlock() instanceof LeavesBlock && !state.getValue(BlockStateProperties.PERSISTENT) && state.getValue(BlockStateProperties.DISTANCE) == 7) {
+        boolean isNewLeaf = newState.hasProperty(BlockStateProperties.PERSISTENT);
+        boolean hasDistance = newState.hasProperty(BlockStateProperties.DISTANCE);
+
+        if (isNewLeaf && hasDistance && !newState.getValue(BlockStateProperties.PERSISTENT) && newState.getValue(BlockStateProperties.DISTANCE) == 7) {
             Data data = Data.getOrCreate(serverLevel);
-            data.breakTargets.add(new PosSnapshot(pos, state));
+            data.breakTargets.add(new PosSnapshot(pos, newState));
             data.setDirty();
         }
     }
