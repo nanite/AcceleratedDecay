@@ -5,13 +5,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,7 +28,7 @@ public class AcceleratedDecay {
     public static void init() {
     }
 
-    public static void levelTick(ServerLevel serverLevel, BlockBreakCallback blockBreakCallback) {
+    public static void levelTick(ServerLevel serverLevel) {
         Data data = Data.getOrCreate(serverLevel);
         Queue<PosSnapshot> posSnapshots = data.breakTargets;
         if (posSnapshots == null) {
@@ -50,11 +48,6 @@ public class AcceleratedDecay {
 
             BlockState blockState = serverLevel.getBlockState(snapshot.pos);
             if (!blockState.is(BlockTags.LEAVES)) {
-                continue;
-            }
-
-            boolean eventResult = blockBreakCallback.onBreak(serverLevel, snapshot.pos, blockState, null);
-            if (!eventResult) {
                 continue;
             }
 
@@ -133,10 +126,5 @@ public class AcceleratedDecay {
         public static Data getOrCreate(ServerLevel level) {
             return level.getDataStorage().computeIfAbsent(TYPE);
         }
-    }
-
-    @FunctionalInterface
-    public interface BlockBreakCallback {
-        boolean onBreak(ServerLevel level, BlockPos pos, BlockState state, ServerPlayer player);
     }
 }

@@ -12,12 +12,6 @@ import pro.mikey.accelerateddecay.AcceleratedDecay;
 public class AcceleratedDecayFabric implements ModInitializer {
     @Override
     public void onInitialize() {
-        ServerTickEvents.END_LEVEL_TICK.register((level) -> {
-            AcceleratedDecay.levelTick(level, this::fireBlockBreakEvent);
-        });
-    }
-
-    private boolean fireBlockBreakEvent(ServerLevel level, BlockPos pos, BlockState blockState, ServerPlayer player) {
-        return PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(level, player, pos, blockState, level.getBlockEntity(pos));
+        ServerTickEvents.END_LEVEL_TICK.register(AcceleratedDecay::levelTick);
     }
 }
