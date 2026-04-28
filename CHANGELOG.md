@@ -1,3 +1,8 @@
+## [26.1.2.4]
+
+### Fixed
+* We no longer call native events for block breaking. I'm sure this will annoy people.
+
 ## [26.1.2.3]
 
 ### Fixed
