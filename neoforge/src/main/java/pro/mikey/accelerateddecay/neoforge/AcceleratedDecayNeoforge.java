@@ -20,15 +20,6 @@ public class AcceleratedDecayNeoforge {
     public AcceleratedDecayNeoforge() {
         AcceleratedDecay.init();
         NeoForge.EVENT_BUS.addListener(this::serverTick);
-        NeoForge.EVENT_BUS.addListener(this::blockBreak);
-    }
-
-    private void blockBreak(BreakBlockEvent event) {
-        if (!(event.getLevel() instanceof ServerLevel serverLevel)) {
-            return;
-        }
-
-        AcceleratedDecay.breakHandler(serverLevel, event.getPos(), event.getState(), (ServerPlayer) event.getPlayer());
     }
 
     private void serverTick(LevelTickEvent.Post event) {

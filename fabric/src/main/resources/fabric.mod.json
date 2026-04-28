@@ -15,6 +15,7 @@
     "main": ["pro.mikey.accelerateddecay.fabric.AcceleratedDecayFabric"]
   },
   "mixins": [
+    "accelerateddecay.mixins.json"
   ],
   "depends": {
     "fabric-api": "${fabric_api_version_range}",
