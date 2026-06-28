@@ -36,8 +36,6 @@ configurations {
 }
 
 dependencies {
-    localRuntime "curse.maven:ftb-library-forge-404465:7971743"
-    localRuntime "curse.maven:ftb-ultimine-forge-386134:7965974"
 }
 
 repositories {

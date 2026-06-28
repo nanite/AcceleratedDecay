@@ -15,12 +15,20 @@ import pro.mikey.accelerateddecay.AcceleratedDecay;
 public class LevelMixin {
     @Inject(
             method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z",
-            at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/Level;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;")
+            at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/chunk/LevelChunk;setBlockState(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Lnet/minecraft/world/level/block/state/BlockState;")
     )
     public void acceleratedDecay$onBlockStateUpdate(BlockPos pos, BlockState blockState, int updateFlags, int updateLimit, CallbackInfoReturnable<Boolean> cir,
-                                                    @Local(name = "oldState") BlockState oldState,
-                                                    @Local(name = "newState") BlockState newState
+                                                    @Local(name = "oldState") BlockState oldState
     ) {
+        if (oldState == null) {
+            return;
+        }
+
+        var newState = ((Level) (Object) this).getBlockState(pos);
+        if (newState == null) {
+            return;
+        }
+
         // If the old state isn't a leaf and the new state isn't a leaf. We don't care
         if (!oldState.is(BlockTags.LEAVES) || !newState.is(BlockTags.LEAVES)) {
             return;
